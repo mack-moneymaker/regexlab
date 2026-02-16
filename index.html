@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RegexLab — Fast Online Regex Tester | Regular Expression Tester</title>
+<meta name="description" content="RegexLab is a fast, clean online regex tester. Test regular expressions with instant match highlighting, group extraction, replace mode, and a built-in cheat sheet.">
+<meta name="keywords" content="regex tester, regex tester online, regular expression tester, regex101 alternative, regex match, regex replace, regex groups">
+<meta property="og:title" content="RegexLab — Fast Online Regex Tester">
+<meta property="og:description" content="Test regex patterns instantly with match highlighting, groups, replace mode, and a cheat sheet. Free, fast, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mack-moneymaker.github.io/regexlab/">
+<link rel="canonical" href="https://mack-moneymaker.github.io/regexlab/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <h1>Regex<span class="accent">Lab</span></h1>
+    <span class="tagline">Fast regex testing</span>
+  </div>
+  <div class="header-right">
+    <button id="shareBtn" class="btn btn-sm" title="Share via URL">🔗 Share</button>
+    <button id="themeBtn" class="btn btn-sm" title="Toggle theme">🌙</button>
+    <button id="cheatsheetToggle" class="btn btn-sm" title="Toggle cheat sheet">📖 Cheat Sheet</button>
+  </div>
+</header>
+
+<main>
+  <!-- Pattern Bar -->
+  <section class="pattern-bar">
+    <div class="pattern-input-wrap">
+      <span class="regex-delim">/</span>
+      <input type="text" id="pattern" placeholder="Enter regex pattern..." spellcheck="false" autocomplete="off">
+      <span class="regex-delim">/</span>
+      <input type="text" id="flags" value="g" class="flags-input" placeholder="flags" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="flag-toggles">
+      <label class="flag-chip" title="Global"><input type="checkbox" data-flag="g" checked><span>g</span></label>
+      <label class="flag-chip" title="Case-insensitive"><input type="checkbox" data-flag="i"><span>i</span></label>
+      <label class="flag-chip" title="Multiline"><input type="checkbox" data-flag="m"><span>m</span></label>
+      <label class="flag-chip" title="Dotall (s)"><input type="checkbox" data-flag="s"><span>s</span></label>
+      <label class="flag-chip" title="Unicode"><input type="checkbox" data-flag="u"><span>u</span></label>
+      <label class="flag-chip" title="Sticky"><input type="checkbox" data-flag="y"><span>y</span></label>
+    </div>
+    <div class="mode-toggle">
+      <label class="mode-chip"><input type="radio" name="mode" value="match" checked><span>Match</span></label>
+      <label class="mode-chip"><input type="radio" name="mode" value="replace"><span>Replace</span></label>
+    </div>
+  </section>
+
+  <!-- Replace bar (hidden by default) -->
+  <section class="replace-bar hidden" id="replaceBar">
+    <input type="text" id="replaceInput" placeholder="Replace with..." spellcheck="false" autocomplete="off">
+  </section>
+
+  <!-- Error display -->
+  <div id="error" class="error-bar hidden"></div>
+
+  <!-- Split Pane -->
+  <section class="split-pane">
+    <div class="pane pane-left">
+      <div class="pane-header">Test String</div>
+      <div id="testString" class="test-area" contenteditable="true" spellcheck="false" data-placeholder="Type or paste your test string here..."></div>
+    </div>
+    <div class="pane pane-right">
+      <div class="pane-header">Results <span id="matchCount" class="match-count"></span></div>
+      <div id="highlighted" class="result-area"></div>
+      <div class="pane-header" style="margin-top:12px">Match Details</div>
+      <div id="matchDetails" class="match-details">
+        <table id="matchTable">
+          <thead><tr><th>#</th><th>Match</th><th>Index</th><th>Groups</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Common Patterns Library -->
+  <section class="library">
+    <h2>Common Patterns</h2>
+    <div class="library-grid" id="libraryGrid"></div>
+  </section>
+</main>
+
+<!-- Cheat Sheet Sidebar -->
+<aside id="cheatsheet" class="cheatsheet hidden">
+  <div class="cheatsheet-header">
+    <h2>Regex Cheat Sheet</h2>
+    <button id="cheatsheetClose" class="btn btn-sm">✕</button>
+  </div>
+  <div class="cheatsheet-body" id="cheatsheetBody"></div>
+</aside>
+<div id="overlay" class="overlay hidden"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-tools">
+    <span>More dev tools:</span>
+    <a href="https://mack-moneymaker.github.io/json-formatter/" target="_blank">JSON Formatter</a>
+    <a href="https://mack-moneymaker.github.io/diff-checker/" target="_blank">Diff Checker</a>
+    <a href="https://mack-moneymaker.github.io/base64-tool/" target="_blank">Base64 Encode/Decode</a>
+    <a href="https://mack-moneymaker.github.io/hash-generator/" target="_blank">Hash Generator</a>
+  </div>
+  <div class="footer-copy">RegexLab — Open source on <a href="https://github.com/mack-moneymaker/regexlab" target="_blank">GitHub</a></div>
+</footer>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
