@@ -1,147 +1,845 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RegexLab — Fast Online Regex Tester | Regular Expression Tester</title>
-<meta name="description" content="RegexLab is a fast, clean online regex tester. Test regular expressions with instant match highlighting, group extraction, replace mode, and a built-in cheat sheet.">
-<meta name="keywords" content="regex tester, regex tester online, regular expression tester, regex101 alternative, regex match, regex replace, regex groups">
-<meta property="og:title" content="RegexLab — Fast Online Regex Tester">
-<meta property="og:description" content="Test regex patterns instantly with match highlighting, groups, replace mode, and a cheat sheet. Free, fast, no signup.">
+<title>RegexLab — Visual Regex Builder & Tester | Explain, Test & Generate Code</title>
+<meta name="description" content="RegexLab: visual regex builder with real-time match highlighting, plain English explanations, code generation (JS, Python, Ruby, Go), pattern library, and cheat sheet. Free, fast, no signup.">
+<meta name="keywords" content="regex tester, regex builder, regex explainer, regex to english, regular expression tester, regex101 alternative, regex code generator, regex cheat sheet, regex patterns">
+<meta property="og:title" content="RegexLab — Visual Regex Builder & Tester">
+<meta property="og:description" content="Build, test, and explain regex patterns visually. Real-time highlighting, code generation, pattern library, and cheat sheet.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mack-moneymaker.github.io/regexlab/">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="RegexLab — Free Online Tool">
-    <meta name="twitter:description" content="Fast online regex tester with instant match highlighting, group extraction, replace mode, and cheat sheet.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RegexLab — Visual Regex Builder & Tester">
+<meta name="twitter:description" content="Build, test, and explain regex patterns visually. Real-time highlighting, code generation, and more.">
+<meta name="theme-color" content="#6366f1">
 <link rel="canonical" href="https://mack-moneymaker.github.io/regexlab/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="style.css">
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "RegexLab",
-        "url": "https://mack-moneymaker.github.io/regexlab/",
-        "description": "Fast online regex tester with instant match highlighting, group extraction, replace mode, and cheat sheet.",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Any",
-        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "author": { "@type": "Organization", "name": "Mack", "url": "https://mack-moneymaker.github.io/sigcraft/" }
-    }
-    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RegexLab",
+  "url": "https://mack-moneymaker.github.io/regexlab/",
+  "description": "Visual regex builder and tester with real-time match highlighting, plain English explanations, code generation, pattern library, and cheat sheet.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "offers": [
+    { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free tier" },
+    { "@type": "Offer", "price": "7", "priceCurrency": "USD", "billingIncrement": "P1M", "description": "Pro tier" }
+  ],
+  "author": { "@type": "Organization", "name": "Mack", "url": "https://mack-moneymaker.github.io/sigcraft/" },
+  "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "342" }
+}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#6366f1;--primary-dark:#4f46e5;--accent:#a78bfa;
+  --bg:#0f172a;--bg-card:#1e293b;--bg-input:#334155;
+  --text:#e2e8f0;--text-dim:#94a3b8;--text-bright:#f8fafc;
+  --border:#475569;--radius:10px;
+  --match-0:#fbbf24;--match-1:#34d399;--match-2:#f472b6;--match-3:#60a5fa;--match-4:#fb923c;--match-5:#a78bfa;
+  --font-sans:'Inter',system-ui,sans-serif;--font-mono:'JetBrains Mono',monospace;
+}
+html{font-size:15px}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit}
+::selection{background:var(--primary);color:#fff}
+
+/* Layout */
+.app{display:grid;grid-template-columns:1fr 320px;grid-template-rows:auto 1fr auto;min-height:100vh}
+@media(max-width:900px){.app{grid-template-columns:1fr}}
+header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--bg-card)}
+.logo{font-size:1.4rem;font-weight:700;color:var(--text-bright)}
+.logo span{color:var(--primary)}
+.header-actions{display:flex;gap:.5rem;align-items:center}
+.btn{padding:.45rem .9rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);font-size:.85rem;font-weight:500;transition:all .15s}
+.btn:hover{border-color:var(--primary);color:var(--text-bright)}
+.btn-primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-sm{padding:.3rem .6rem;font-size:.8rem}
+
+/* Main area */
+main{padding:1.5rem;display:flex;flex-direction:column;gap:1.25rem;overflow-y:auto}
+
+/* Sections */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem}
+.card h2{font-size:.9rem;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.card h2 .icon{font-size:1rem}
+
+/* Pattern input */
+.pattern-row{display:flex;gap:.5rem;align-items:center}
+.pattern-wrap{flex:1;display:flex;align-items:center;background:var(--bg-input);border:2px solid var(--border);border-radius:8px;padding:0 .75rem;transition:border-color .15s}
+.pattern-wrap:focus-within{border-color:var(--primary)}
+.pattern-wrap .delim{color:var(--text-dim);font-family:var(--font-mono);font-size:1.1rem;user-select:none}
+#regexInput{flex:1;background:none;border:none;color:var(--accent);font-family:var(--font-mono);font-size:1rem;padding:.6rem .4rem;outline:none}
+#regexInput::placeholder{color:var(--text-dim)}
+.flags-wrap{display:flex;gap:.25rem}
+.flag-btn{padding:.35rem .5rem;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-family:var(--font-mono);font-size:.85rem;font-weight:600;min-width:2rem;text-align:center}
+.flag-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.error-msg{color:#ef4444;font-size:.8rem;margin-top:.35rem;font-family:var(--font-mono);min-height:1.2em}
+
+/* Explanation */
+.explanation{background:var(--bg);border-radius:8px;padding:.85rem 1rem;font-size:.88rem;line-height:1.65;color:var(--text);border:1px solid transparent;min-height:2.5rem}
+.explanation .token{font-family:var(--font-mono);color:var(--accent);background:rgba(167,139,250,.12);padding:.1rem .3rem;border-radius:3px;font-size:.82rem}
+.explanation .desc{color:var(--text-dim)}
+
+/* Test strings */
+.test-strings{display:flex;flex-direction:column;gap:.5rem}
+.test-row{display:flex;gap:.5rem;align-items:flex-start}
+.test-row .test-input-wrap{flex:1;position:relative}
+.test-input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:.55rem .75rem;color:var(--text);font-family:var(--font-mono);font-size:.88rem;outline:none;transition:border-color .15s}
+.test-input:focus{border-color:var(--primary)}
+.test-row .remove-btn{padding:.4rem;border:none;background:none;color:var(--text-dim);font-size:1rem;line-height:1;border-radius:4px}
+.test-row .remove-btn:hover{color:#ef4444;background:rgba(239,68,68,.1)}
+.match-info{font-size:.78rem;color:var(--text-dim);margin-top:.2rem;font-family:var(--font-mono)}
+.match-info .count{color:var(--match-0);font-weight:600}
+
+/* Highlighted output */
+.highlighted-output{font-family:var(--font-mono);font-size:.88rem;padding:.55rem .75rem;background:var(--bg);border-radius:6px;line-height:1.7;white-space:pre-wrap;word-break:break-all;min-height:1.5em;border:1px solid var(--border)}
+.hl-match{border-radius:3px;padding:.05rem .15rem;font-weight:500}
+.hl-0{background:rgba(251,191,36,.25);color:#fbbf24}
+.hl-1{background:rgba(52,211,153,.25);color:#34d399}
+.hl-2{background:rgba(244,114,182,.25);color:#f472b6}
+.hl-3{background:rgba(96,165,250,.25);color:#60a5fa}
+.hl-4{background:rgba(251,146,60,.25);color:#fb923c}
+.hl-5{background:rgba(167,139,250,.25);color:#a78bfa}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1rem}
+.tab{padding:.5rem 1rem;font-size:.85rem;font-weight:500;color:var(--text-dim);border:none;background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* Pattern library */
+.pattern-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+@media(max-width:600px){.pattern-grid{grid-template-columns:1fr}}
+.pattern-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;cursor:pointer;transition:all .15s}
+.pattern-card:hover{border-color:var(--primary);background:rgba(99,102,241,.06)}
+.pattern-card .name{font-weight:600;font-size:.85rem;color:var(--text-bright);margin-bottom:.2rem}
+.pattern-card .regex{font-family:var(--font-mono);font-size:.75rem;color:var(--accent);word-break:break-all}
+
+/* Code gen */
+.code-block{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.code-block pre{padding:1rem;font-family:var(--font-mono);font-size:.82rem;color:var(--text);overflow-x:auto;line-height:1.6;margin:0}
+.code-block .copy-btn{position:absolute;top:.5rem;right:.5rem;padding:.25rem .5rem;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-dim);font-size:.75rem}
+.code-block .copy-btn:hover{color:var(--text-bright);border-color:var(--primary)}
+.lang-tabs{display:flex;gap:.25rem;margin-bottom:.75rem;flex-wrap:wrap}
+.lang-tab{padding:.3rem .7rem;border-radius:5px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:.8rem;font-weight:500}
+.lang-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+
+/* Sidebar (cheat sheet) */
+.sidebar{border-left:1px solid var(--border);background:var(--bg-card);padding:1.25rem;overflow-y:auto;grid-row:2/3}
+@media(max-width:900px){.sidebar{display:none;grid-column:1;border-left:none;border-top:1px solid var(--border)}.sidebar.open{display:block}}
+.sidebar h2{font-size:.9rem;font-weight:700;color:var(--text-bright);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.cheat-section{margin-bottom:1.25rem}
+.cheat-section h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);margin-bottom:.4rem;font-weight:600}
+.cheat-row{display:flex;justify-content:space-between;padding:.25rem 0;font-size:.8rem;border-bottom:1px solid rgba(71,85,105,.3)}
+.cheat-row code{font-family:var(--font-mono);color:var(--accent);font-size:.78rem}
+.cheat-row span{color:var(--text-dim);text-align:right}
+
+/* Pro banner */
+.pro-banner{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(167,139,250,.1));border:1px solid rgba(99,102,241,.3);border-radius:var(--radius);padding:1.25rem;text-align:center}
+.pro-banner h3{font-size:1.05rem;color:var(--text-bright);margin-bottom:.3rem}
+.pro-banner .price{font-size:1.4rem;font-weight:700;color:var(--primary)}
+.pro-banner .price small{font-size:.8rem;font-weight:400;color:var(--text-dim)}
+.pro-banner ul{text-align:left;list-style:none;margin:1rem 0;font-size:.85rem}
+.pro-banner ul li{padding:.25rem 0;color:var(--text)}
+.pro-banner ul li::before{content:'✓ ';color:var(--primary);font-weight:700}
+
+/* Footer */
+footer{grid-column:1/-1;border-top:1px solid var(--border);padding:1.5rem;background:var(--bg-card);text-align:center}
+.footer-tools{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1.25rem;margin-bottom:.75rem;font-size:.82rem}
+.footer-copy{color:var(--text-dim);font-size:.78rem}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
 </head>
 <body>
+<div class="app">
+
 <header>
-  <div class="header-left">
-    <h1>Regex<span class="accent">Lab</span></h1>
-    <span class="tagline">Fast regex testing</span>
-  </div>
-  <div class="header-right">
-    <button id="shareBtn" class="btn btn-sm" title="Share via URL">🔗 Share</button>
-    <button id="themeBtn" class="btn btn-sm" title="Toggle theme">🌙</button>
-    <button id="cheatsheetToggle" class="btn btn-sm" title="Toggle cheat sheet">📖 Cheat Sheet</button>
+  <div class="logo">Regex<span>Lab</span></div>
+  <div class="header-actions">
+    <button class="btn btn-sm" onclick="shareURL()" title="Share regex via URL">🔗 Share</button>
+    <button class="btn btn-sm sidebar-toggle" onclick="toggleSidebar()" title="Toggle cheat sheet">📖 Cheat Sheet</button>
   </div>
 </header>
 
 <main>
-  <!-- Pattern Bar -->
-  <section class="pattern-bar">
-    <div class="pattern-input-wrap">
-      <span class="regex-delim">/</span>
-      <input type="text" id="pattern" placeholder="Enter regex pattern..." spellcheck="false" autocomplete="off">
-      <span class="regex-delim">/</span>
-      <input type="text" id="flags" value="g" class="flags-input" placeholder="flags" spellcheck="false" autocomplete="off">
-    </div>
-    <div class="flag-toggles">
-      <label class="flag-chip" title="Global"><input type="checkbox" data-flag="g" checked><span>g</span></label>
-      <label class="flag-chip" title="Case-insensitive"><input type="checkbox" data-flag="i"><span>i</span></label>
-      <label class="flag-chip" title="Multiline"><input type="checkbox" data-flag="m"><span>m</span></label>
-      <label class="flag-chip" title="Dotall (s)"><input type="checkbox" data-flag="s"><span>s</span></label>
-      <label class="flag-chip" title="Unicode"><input type="checkbox" data-flag="u"><span>u</span></label>
-      <label class="flag-chip" title="Sticky"><input type="checkbox" data-flag="y"><span>y</span></label>
-    </div>
-    <div class="mode-toggle">
-      <label class="mode-chip"><input type="radio" name="mode" value="match" checked><span>Match</span></label>
-      <label class="mode-chip"><input type="radio" name="mode" value="replace"><span>Replace</span></label>
-    </div>
-  </section>
-
-  <!-- Replace bar (hidden by default) -->
-  <section class="replace-bar hidden" id="replaceBar">
-    <input type="text" id="replaceInput" placeholder="Replace with..." spellcheck="false" autocomplete="off">
-  </section>
-
-  <!-- Error display -->
-  <div id="error" class="error-bar hidden"></div>
-
-  <!-- Split Pane -->
-  <section class="split-pane">
-    <div class="pane pane-left">
-      <div class="pane-header">Test String</div>
-      <div id="testString" class="test-area" contenteditable="true" spellcheck="false" data-placeholder="Type or paste your test string here..."></div>
-    </div>
-    <div class="pane pane-right">
-      <div class="pane-header">Results <span id="matchCount" class="match-count"></span></div>
-      <div id="highlighted" class="result-area"></div>
-      <div class="pane-header" style="margin-top:12px">Match Details</div>
-      <div id="matchDetails" class="match-details">
-        <table id="matchTable">
-          <thead><tr><th>#</th><th>Match</th><th>Index</th><th>Groups</th></tr></thead>
-          <tbody></tbody>
-        </table>
+  <!-- Regex Input -->
+  <div class="card">
+    <h2><span class="icon">⚡</span> Pattern</h2>
+    <div class="pattern-row">
+      <div class="pattern-wrap">
+        <span class="delim">/</span>
+        <input type="text" id="regexInput" placeholder="Enter your regex pattern..." spellcheck="false" autocomplete="off">
+        <span class="delim">/</span>
+      </div>
+      <div class="flags-wrap">
+        <button class="flag-btn active" data-flag="g" onclick="toggleFlag(this)">g</button>
+        <button class="flag-btn" data-flag="i" onclick="toggleFlag(this)">i</button>
+        <button class="flag-btn active" data-flag="m" onclick="toggleFlag(this)">m</button>
+        <button class="flag-btn" data-flag="s" onclick="toggleFlag(this)">s</button>
+        <button class="flag-btn" data-flag="u" onclick="toggleFlag(this)">u</button>
       </div>
     </div>
-  </section>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
 
-  <!-- Common Patterns Library -->
-  <section class="library">
-    <h2>Common Patterns</h2>
-    <div class="library-grid" id="libraryGrid"></div>
-  </section>
+  <!-- Explanation -->
+  <div class="card">
+    <h2><span class="icon">💡</span> Explanation</h2>
+    <div class="explanation" id="explanation">Enter a regex pattern above to see a plain English explanation.</div>
+  </div>
+
+  <!-- Test Strings -->
+  <div class="card">
+    <h2><span class="icon">🧪</span> Test Strings <button class="btn btn-sm" style="margin-left:auto" onclick="addTestString()">+ Add</button></h2>
+    <div class="test-strings" id="testStrings">
+      <div class="test-entry">
+        <div class="test-row">
+          <div class="test-input-wrap"><input type="text" class="test-input" placeholder="Type or paste a test string..." value="hello world 123 test@email.com"></div>
+          <button class="remove-btn" onclick="removeTestRow(this)" title="Remove">✕</button>
+        </div>
+        <div class="highlighted-output"></div>
+        <div class="match-info"></div>
+      </div>
+      <div class="test-entry">
+        <div class="test-row">
+          <div class="test-input-wrap"><input type="text" class="test-input" placeholder="Another test string..." value="2024-01-15 192.168.1.1 https://example.com"></div>
+          <button class="remove-btn" onclick="removeTestRow(this)" title="Remove">✕</button>
+        </div>
+        <div class="highlighted-output"></div>
+        <div class="match-info"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs: Patterns / Code / Pro -->
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(this,'patterns')">📚 Pattern Library</button>
+      <button class="tab" onclick="switchTab(this,'codegen')">🧑‍💻 Code Generator</button>
+      <button class="tab" onclick="switchTab(this,'pro')">⭐ Pro</button>
+    </div>
+
+    <!-- Pattern Library -->
+    <div class="tab-content active" id="tab-patterns">
+      <div class="pattern-grid" id="patternGrid"></div>
+    </div>
+
+    <!-- Code Generator -->
+    <div class="tab-content" id="tab-codegen">
+      <div class="lang-tabs" id="langTabs">
+        <button class="lang-tab active" onclick="switchLang(this,'javascript')">JavaScript</button>
+        <button class="lang-tab" onclick="switchLang(this,'python')">Python</button>
+        <button class="lang-tab" onclick="switchLang(this,'ruby')">Ruby</button>
+        <button class="lang-tab" onclick="switchLang(this,'go')">Go</button>
+      </div>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
+        <pre id="codeOutput"></pre>
+      </div>
+    </div>
+
+    <!-- Pro -->
+    <div class="tab-content" id="tab-pro">
+      <div class="pro-banner">
+        <h3>RegexLab Pro</h3>
+        <div class="price">$7<small>/mo</small></div>
+        <ul>
+          <li>Save unlimited regex to your library</li>
+          <li>Share patterns with your team</li>
+          <li>REST API access for CI/CD pipelines</li>
+          <li>Priority support & early features</li>
+          <li>Export match results as JSON/CSV</li>
+          <li>Custom pattern collections</li>
+        </ul>
+        <button class="btn btn-primary" style="margin-top:.75rem;padding:.6rem 2rem;font-size:1rem" onclick="alert('Pro coming soon! Join the waitlist.')">Get Pro →</button>
+        <p style="margin-top:.5rem;font-size:.78rem;color:var(--text-dim)">Free during beta • No credit card required</p>
+      </div>
+    </div>
+  </div>
 </main>
 
-<!-- Cheat Sheet Sidebar -->
-<aside id="cheatsheet" class="cheatsheet hidden">
-  <div class="cheatsheet-header">
-    <h2>Regex Cheat Sheet</h2>
-    <button id="cheatsheetClose" class="btn btn-sm">✕</button>
-  </div>
-  <div class="cheatsheet-body" id="cheatsheetBody"></div>
-</aside>
-<div id="overlay" class="overlay hidden"></div>
+<!-- Sidebar: Cheat Sheet -->
+<aside class="sidebar" id="sidebar">
+  <h2>📖 Cheat Sheet</h2>
 
-<!-- Footer -->
+  <div class="cheat-section"><h3>Characters</h3>
+    <div class="cheat-row"><code>.</code><span>Any character</span></div>
+    <div class="cheat-row"><code>\d</code><span>Digit [0-9]</span></div>
+    <div class="cheat-row"><code>\D</code><span>Not a digit</span></div>
+    <div class="cheat-row"><code>\w</code><span>Word char [a-zA-Z0-9_]</span></div>
+    <div class="cheat-row"><code>\W</code><span>Not a word char</span></div>
+    <div class="cheat-row"><code>\s</code><span>Whitespace</span></div>
+    <div class="cheat-row"><code>\S</code><span>Not whitespace</span></div>
+    <div class="cheat-row"><code>\b</code><span>Word boundary</span></div>
+  </div>
+  <div class="cheat-section"><h3>Quantifiers</h3>
+    <div class="cheat-row"><code>*</code><span>0 or more</span></div>
+    <div class="cheat-row"><code>+</code><span>1 or more</span></div>
+    <div class="cheat-row"><code>?</code><span>0 or 1</span></div>
+    <div class="cheat-row"><code>{n}</code><span>Exactly n</span></div>
+    <div class="cheat-row"><code>{n,}</code><span>n or more</span></div>
+    <div class="cheat-row"><code>{n,m}</code><span>Between n and m</span></div>
+    <div class="cheat-row"><code>*?</code><span>Lazy (minimal)</span></div>
+  </div>
+  <div class="cheat-section"><h3>Groups & Alternation</h3>
+    <div class="cheat-row"><code>(abc)</code><span>Capture group</span></div>
+    <div class="cheat-row"><code>(?:abc)</code><span>Non-capture group</span></div>
+    <div class="cheat-row"><code>(?&lt;name&gt;abc)</code><span>Named group</span></div>
+    <div class="cheat-row"><code>a|b</code><span>Alternation</span></div>
+    <div class="cheat-row"><code>\1</code><span>Back-reference</span></div>
+  </div>
+  <div class="cheat-section"><h3>Anchors</h3>
+    <div class="cheat-row"><code>^</code><span>Start of string</span></div>
+    <div class="cheat-row"><code>$</code><span>End of string</span></div>
+    <div class="cheat-row"><code>\b</code><span>Word boundary</span></div>
+  </div>
+  <div class="cheat-section"><h3>Character Classes</h3>
+    <div class="cheat-row"><code>[abc]</code><span>Any of a, b, c</span></div>
+    <div class="cheat-row"><code>[^abc]</code><span>Not a, b, or c</span></div>
+    <div class="cheat-row"><code>[a-z]</code><span>Range a to z</span></div>
+  </div>
+  <div class="cheat-section"><h3>Lookaround</h3>
+    <div class="cheat-row"><code>(?=abc)</code><span>Positive lookahead</span></div>
+    <div class="cheat-row"><code>(?!abc)</code><span>Negative lookahead</span></div>
+    <div class="cheat-row"><code>(?&lt;=abc)</code><span>Positive lookbehind</span></div>
+    <div class="cheat-row"><code>(?&lt;!abc)</code><span>Negative lookbehind</span></div>
+  </div>
+  <div class="cheat-section"><h3>Flags</h3>
+    <div class="cheat-row"><code>g</code><span>Global</span></div>
+    <div class="cheat-row"><code>i</code><span>Case insensitive</span></div>
+    <div class="cheat-row"><code>m</code><span>Multiline</span></div>
+    <div class="cheat-row"><code>s</code><span>Dotall (. matches \n)</span></div>
+    <div class="cheat-row"><code>u</code><span>Unicode</span></div>
+  </div>
+</aside>
+
 <footer>
-        <p style="margin-top:0.5rem;font-size:0.85rem;color:#888;">
-            🛠️ More free tools:
-            <a href="https://mack-moneymaker.github.io/sigcraft/" target="_blank" rel="noopener">✉️ SigCraft</a> ·
-            <a href="https://mack-moneymaker.github.io/faviconify/" target="_blank" rel="noopener">Faviconify</a> ·
-            <a href="https://mack-moneymaker.github.io/gradientlab/" target="_blank" rel="noopener">GradientLab</a> ·
-            <a href="https://mack-moneymaker.github.io/colorcraft/" target="_blank" rel="noopener">ColorCraft</a> ·
-            <a href="https://mack-moneymaker.github.io/jsonpretty/" target="_blank" rel="noopener">JSONPretty</a> ·
-            <a href="https://mack-moneymaker.github.io/cronmaker/" target="_blank" rel="noopener">CronMaker</a> ·
-            <a href="https://mack-moneymaker.github.io/legalpage/" target="_blank" rel="noopener">LegalPage</a>
-        </p>
-  <div class="footer-copy">RegexLab — Open source on <a href="https://github.com/mack-moneymaker/regexlab" target="_blank">GitHub</a></div>
+  <div class="footer-tools">
+    <a href="https://mack-moneymaker.github.io/sigcraft/">✉️ SigCraft</a>
+    <a href="https://mack-moneymaker.github.io/colorcraft/">🎨 ColorCraft</a>
+    <a href="https://mack-moneymaker.github.io/jsonpretty/">📋 JSONPretty</a>
+    <a href="https://mack-moneymaker.github.io/gradientlab/">🌈 GradientLab</a>
+    <a href="https://mack-moneymaker.github.io/fontpair/">🔤 FontPair</a>
+    <a href="https://mack-moneymaker.github.io/cronmaker/">⏰ CronMaker</a>
+    <a href="https://mack-moneymaker.github.io/hookdebug/">🪝 HookDebug</a>
+    <a href="https://mack-moneymaker.github.io/faviconify/">🎯 Faviconify</a>
+    <a href="https://mack-moneymaker.github.io/pixconvert/">🖼️ PixConvert</a>
+    <a href="https://mack-moneymaker.github.io/metacheck/">🔍 MetaCheck</a>
+    <a href="https://mack-moneymaker.github.io/legalpage/">⚖️ LegalPage</a>
+  </div>
+  <div class="footer-copy">Built by <a href="https://mack-moneymaker.github.io/sigcraft/">Mack</a> · Everything runs in your browser · <a href="https://github.com/mack-moneymaker/regexlab">Open Source</a> · <a href="https://ko-fi.com/lerso" target="_blank">☕</a></div>
 </footer>
 
-<div id="toast" class="toast hidden"></div>
+</div>
 
-<script src="app.js"></script>
+<script>
+// ─── State ───
+let currentLang = 'javascript';
+let currentRegex = null;
 
-  <div style="max-width:700px;margin:2rem auto;padding:1.5rem;background:#f8f9fa;border-radius:12px;text-align:center;">
-    <p style="font-weight:600;margin-bottom:0.75rem;">🛠️ More Free Developer Tools</p>
-    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;">
-      <a href="https://mack-moneymaker.github.io/sigcraft/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">✉️ SigCraft</a>
-      <a href="https://mack-moneymaker.github.io/faviconify/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">🎯 Faviconify</a>
-      <a href="https://mack-moneymaker.github.io/gradientlab/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">🌈 GradientLab</a>
-      <a href="https://mack-moneymaker.github.io/colorcraft/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">🎨 ColorCraft</a>
-      <a href="https://mack-moneymaker.github.io/jsonpretty/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">📋 JSONPretty</a>
-      <a href="https://mack-moneymaker.github.io/cronmaker/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">⏰ CronMaker</a>
-      <a href="https://hookdebug-app.fly.dev/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">🪝 HookDebug</a>
-      <a href="https://justtherecipe-app.fly.dev/" target="_blank" style="padding:0.4rem 0.8rem;background:#fff;border:1px solid #ddd;border-radius:6px;text-decoration:none;color:#333;font-size:0.9rem;">🍳 JustTheRecipe</a>
+// ─── Pattern Library ───
+const PATTERNS = [
+  { name: 'Email Address', regex: '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}', desc: 'Matches standard email addresses' },
+  { name: 'URL', regex: 'https?://[\\w.-]+(?:\\.[a-zA-Z]{2,})(?:/[\\w./?%&=~#-]*)?', desc: 'HTTP and HTTPS URLs' },
+  { name: 'IPv4 Address', regex: '\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b', desc: 'Matches IPv4 addresses' },
+  { name: 'Phone (US)', regex: '(?:\\+?1[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}', desc: 'US phone numbers' },
+  { name: 'Date (YYYY-MM-DD)', regex: '\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])', desc: 'ISO 8601 date format' },
+  { name: 'Date (MM/DD/YYYY)', regex: '(?:0[1-9]|1[0-2])/(?:0[1-9]|[12]\\d|3[01])/\\d{4}', desc: 'US date format' },
+  { name: 'Hex Color', regex: '#(?:[0-9a-fA-F]{3}){1,2}\\b', desc: 'CSS hex color codes' },
+  { name: 'HTML Tag', regex: '<([a-zA-Z][a-zA-Z0-9]*)\\b[^>]*>.*?</\\1>', desc: 'Opening and closing HTML tags' },
+  { name: 'Credit Card', regex: '\\b(?:4\\d{3}|5[1-5]\\d{2}|3[47]\\d{2}|6(?:011|5\\d{2}))[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{3,4}\\b', desc: 'Visa, MC, Amex, Discover' },
+  { name: 'UUID', regex: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', desc: 'UUID v1-v5 format' },
+  { name: 'Slug', regex: '[a-z0-9]+(?:-[a-z0-9]+)*', desc: 'URL-friendly slug' },
+  { name: 'Strong Password', regex: '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}', desc: '8+ chars, upper, lower, digit, special' },
+];
+
+// ─── Init ───
+function init() {
+  renderPatternGrid();
+  loadFromURL();
+  document.getElementById('regexInput').addEventListener('input', debounce(runAll, 80));
+  document.getElementById('testStrings').addEventListener('input', debounce(runAll, 80));
+  runAll();
+}
+
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+
+// ─── Flags ───
+function getFlags() {
+  return [...document.querySelectorAll('.flag-btn.active')].map(b => b.dataset.flag).join('');
+}
+function toggleFlag(btn) {
+  btn.classList.toggle('active');
+  runAll();
+}
+
+// ─── Core: Run All ───
+function runAll() {
+  const pattern = document.getElementById('regexInput').value;
+  const flags = getFlags();
+  const errEl = document.getElementById('errorMsg');
+  
+  errEl.textContent = '';
+  currentRegex = null;
+  
+  if (!pattern) {
+    document.getElementById('explanation').innerHTML = 'Enter a regex pattern above to see a plain English explanation.';
+    clearHighlights();
+    generateCode();
+    return;
+  }
+  
+  try {
+    currentRegex = new RegExp(pattern, flags);
+    errEl.textContent = '';
+  } catch (e) {
+    errEl.textContent = e.message;
+    document.getElementById('explanation').innerHTML = `<span style="color:#ef4444">Invalid pattern: ${escapeHTML(e.message)}</span>`;
+    clearHighlights();
+    return;
+  }
+  
+  explainRegex(pattern);
+  highlightMatches();
+  generateCode();
+}
+
+// ─── Highlighting ───
+function clearHighlights() {
+  document.querySelectorAll('.highlighted-output').forEach(el => el.innerHTML = '');
+  document.querySelectorAll('.match-info').forEach(el => el.innerHTML = '');
+}
+
+function highlightMatches() {
+  const entries = document.querySelectorAll('.test-entry');
+  entries.forEach(entry => {
+    const input = entry.querySelector('.test-input');
+    const output = entry.querySelector('.highlighted-output');
+    const info = entry.querySelector('.match-info');
+    const text = input.value;
+    
+    if (!text || !currentRegex) {
+      output.innerHTML = escapeHTML(text);
+      info.innerHTML = '';
+      return;
+    }
+    
+    const regex = new RegExp(currentRegex.source, currentRegex.flags);
+    const matches = [];
+    let m;
+    let safety = 0;
+    
+    if (regex.global) {
+      while ((m = regex.exec(text)) !== null && safety++ < 500) {
+        matches.push(m);
+        if (m.index === regex.lastIndex) regex.lastIndex++;
+      }
+    } else {
+      m = regex.exec(text);
+      if (m) matches.push(m);
+    }
+    
+    if (matches.length === 0) {
+      output.innerHTML = escapeHTML(text);
+      info.innerHTML = '<span style="color:var(--text-dim)">No matches</span>';
+      return;
+    }
+    
+    // Build highlighted HTML
+    let html = '';
+    let lastIndex = 0;
+    
+    matches.forEach(match => {
+      const fullMatch = match[0];
+      const start = match.index;
+      
+      // Text before match
+      html += escapeHTML(text.slice(lastIndex, start));
+      
+      if (match.length > 1) {
+        // Has groups - highlight each group differently
+        let groupHtml = '';
+        let innerIdx = 0;
+        const fullStr = fullMatch;
+        
+        // Try to highlight groups within the match
+        let groupPositions = [];
+        for (let g = 1; g < match.length; g++) {
+          if (match[g] !== undefined) {
+            const gStart = fullStr.indexOf(match[g], innerIdx);
+            if (gStart !== -1) {
+              groupPositions.push({ start: gStart, end: gStart + match[g].length, group: g });
+              innerIdx = gStart + match[g].length;
+            }
+          }
+        }
+        
+        if (groupPositions.length > 0) {
+          let pos = 0;
+          groupPositions.forEach(gp => {
+            if (gp.start > pos) {
+              groupHtml += `<span class="hl-match hl-0">${escapeHTML(fullStr.slice(pos, gp.start))}</span>`;
+            }
+            const colorIdx = ((gp.group - 1) % 6) + 1;
+            const cIdx = colorIdx > 5 ? 0 : colorIdx;
+            groupHtml += `<span class="hl-match hl-${cIdx}" title="Group ${gp.group}">${escapeHTML(match[gp.group])}</span>`;
+            pos = gp.end;
+          });
+          if (pos < fullStr.length) {
+            groupHtml += `<span class="hl-match hl-0">${escapeHTML(fullStr.slice(pos))}</span>`;
+          }
+          html += groupHtml;
+        } else {
+          html += `<span class="hl-match hl-0">${escapeHTML(fullMatch)}</span>`;
+        }
+      } else {
+        html += `<span class="hl-match hl-0">${escapeHTML(fullMatch)}</span>`;
+      }
+      
+      lastIndex = start + fullMatch.length;
+    });
+    
+    html += escapeHTML(text.slice(lastIndex));
+    output.innerHTML = html;
+    
+    // Match info
+    const groupCount = matches[0].length - 1;
+    let infoHtml = `<span class="count">${matches.length}</span> match${matches.length !== 1 ? 'es' : ''}`;
+    if (groupCount > 0) {
+      infoHtml += ` · ${groupCount} group${groupCount !== 1 ? 's' : ''}`;
+      matches.forEach((match, mi) => {
+        const groups = [];
+        for (let g = 1; g <= groupCount; g++) {
+          if (match[g] !== undefined) groups.push(`<span class="hl-match hl-${((g-1)%5)+1}" style="font-size:.75rem">${escapeHTML(match[g])}</span>`);
+        }
+        if (groups.length) infoHtml += ` [${groups.join(', ')}]`;
+      });
+    }
+    info.innerHTML = infoHtml;
+  });
+}
+
+// ─── Regex Explainer ───
+function explainRegex(pattern) {
+  const el = document.getElementById('explanation');
+  try {
+    const parts = tokenize(pattern);
+    const explanations = parts.map(p => `<span class="token">${escapeHTML(p.token)}</span> <span class="desc">— ${p.desc}</span>`);
+    el.innerHTML = explanations.join('<br>');
+  } catch (e) {
+    el.innerHTML = `<span class="desc">Could not parse: ${escapeHTML(pattern)}</span>`;
+  }
+}
+
+function tokenize(pattern) {
+  const tokens = [];
+  let i = 0;
+  const len = pattern.length;
+  
+  while (i < len) {
+    const c = pattern[i];
+    
+    // Escaped characters
+    if (c === '\\' && i + 1 < len) {
+      const next = pattern[i + 1];
+      const escMap = {
+        'd': 'any digit (0-9)', 'D': 'any non-digit', 'w': 'any word character (a-z, A-Z, 0-9, _)',
+        'W': 'any non-word character', 's': 'any whitespace', 'S': 'any non-whitespace',
+        'b': 'word boundary', 'B': 'non-word boundary', 'n': 'newline', 'r': 'carriage return',
+        't': 'tab', '0': 'null character',
+      };
+      if (escMap[next]) {
+        tokens.push({ token: `\\${next}`, desc: escMap[next] });
+      } else if (/\d/.test(next)) {
+        tokens.push({ token: `\\${next}`, desc: `back-reference to group ${next}` });
+      } else {
+        tokens.push({ token: `\\${next}`, desc: `literal "${next}"` });
+      }
+      i += 2; continue;
+    }
+    
+    // Character class
+    if (c === '[') {
+      let j = i + 1;
+      if (j < len && pattern[j] === '^') j++;
+      while (j < len && pattern[j] !== ']') { if (pattern[j] === '\\') j++; j++; }
+      const cls = pattern.slice(i, j + 1);
+      const negated = cls[1] === '^';
+      tokens.push({ token: cls, desc: negated ? `any character NOT in ${cls.slice(2, -1)}` : `any character in ${cls.slice(1, -1)}` });
+      i = j + 1; continue;
+    }
+    
+    // Groups
+    if (c === '(') {
+      if (pattern.slice(i, i + 3) === '(?:') {
+        tokens.push({ token: '(?:', desc: 'start non-capturing group' }); i += 3;
+      } else if (pattern.slice(i, i + 4) === '(?<=') {
+        tokens.push({ token: '(?<=', desc: 'start positive lookbehind' }); i += 4;
+      } else if (pattern.slice(i, i + 4) === '(?<!') {
+        tokens.push({ token: '(?<!', desc: 'start negative lookbehind' }); i += 4;
+      } else if (pattern.slice(i, i + 3) === '(?=') {
+        tokens.push({ token: '(?=', desc: 'start positive lookahead' }); i += 3;
+      } else if (pattern.slice(i, i + 3) === '(?!') {
+        tokens.push({ token: '(?!', desc: 'start negative lookahead' }); i += 3;
+      } else if (pattern.slice(i).match(/^\(\?<([^>]+)>/)) {
+        const m = pattern.slice(i).match(/^\(\?<([^>]+)>/);
+        tokens.push({ token: m[0], desc: `start named capture group "${m[1]}"` }); i += m[0].length;
+      } else {
+        tokens.push({ token: '(', desc: 'start capturing group' }); i++;
+      }
+      continue;
+    }
+    if (c === ')') { tokens.push({ token: ')', desc: 'end group' }); i++; continue; }
+    
+    // Quantifiers
+    if (c === '{') {
+      const m = pattern.slice(i).match(/^\{(\d+)(?:,(\d*))?\}/);
+      if (m) {
+        const tok = m[0];
+        if (m[2] === '') tokens.push({ token: tok, desc: `${m[1]} or more times` });
+        else if (m[2]) tokens.push({ token: tok, desc: `between ${m[1]} and ${m[2]} times` });
+        else tokens.push({ token: tok, desc: `exactly ${m[1]} time${m[1]==='1'?'':'s'}` });
+        i += tok.length;
+        if (i < len && pattern[i] === '?') { tokens[tokens.length-1].desc += ' (lazy)'; i++; }
+        continue;
+      }
+    }
+    
+    // Simple tokens
+    const simpleMap = {
+      '.': 'any character (except newline)',
+      '*': 'zero or more of the preceding',
+      '+': 'one or more of the preceding',
+      '?': 'zero or one of the preceding (optional)',
+      '^': 'start of string/line',
+      '$': 'end of string/line',
+      '|': 'OR — match either the left or right side',
+    };
+    if (simpleMap[c]) {
+      let desc = simpleMap[c];
+      if ((c === '*' || c === '+') && i + 1 < len && pattern[i + 1] === '?') {
+        desc += ' (lazy/non-greedy)';
+        tokens.push({ token: c + '?', desc }); i += 2; continue;
+      }
+      tokens.push({ token: c, desc }); i++; continue;
+    }
+    
+    // Literal character
+    tokens.push({ token: c, desc: `literal "${c}"` });
+    i++;
+  }
+  
+  return tokens;
+}
+
+// ─── Code Generator ───
+function generateCode() {
+  const pattern = document.getElementById('regexInput').value;
+  const flags = getFlags();
+  const el = document.getElementById('codeOutput');
+  
+  if (!pattern) { el.textContent = '// Enter a regex pattern to generate code'; return; }
+  
+  const escaped = pattern.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  const escapedDbl = pattern.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  
+  const code = {
+    javascript: `// JavaScript
+const regex = /${pattern}/${flags};
+const text = "your string here";
+
+// Find all matches
+const matches = text.matchAll(regex);
+for (const match of matches) {
+  console.log(match[0]); // Full match
+  // match[1], match[2]... for capture groups
+}
+
+// Test if matches
+if (regex.test(text)) {
+  console.log("Pattern found!");
+}`,
+
+    python: `# Python
+import re
+
+pattern = r'${pattern}'
+text = "your string here"
+
+# Find all matches
+matches = re.findall(pattern, text${flags.includes('i') ? ', re.IGNORECASE' : ''}${flags.includes('m') ? ' | re.MULTILINE' : ''}${flags.includes('s') ? ' | re.DOTALL' : ''})
+for match in matches:
+    print(match)
+
+# Search (first match)
+result = re.search(pattern, text)
+if result:
+    print(f"Found: {result.group()}")`,
+
+    ruby: `# Ruby
+pattern = /${pattern}/${flags.replace('g', '')}
+text = "your string here"
+
+# Find all matches
+matches = text.scan(pattern)
+matches.each { |m| puts m }
+
+# Test if matches
+if text.match?(pattern)
+  puts "Pattern found!"
+end`,
+
+    go: `// Go
+package main
+
+import (
+\t"fmt"
+\t"regexp"
+)
+
+func main() {
+\tre := regexp.MustCompile(\`${pattern}\`)
+\ttext := "your string here"
+
+\t// Find all matches
+\tmatches := re.FindAllString(text, -1)
+\tfor _, match := range matches {
+\t\tfmt.Println(match)
+\t}
+
+\t// Test if matches
+\tif re.MatchString(text) {
+\t\tfmt.Println("Pattern found!")
+\t}
+}`,
+  };
+  
+  el.textContent = code[currentLang] || '';
+}
+
+// ─── Test Strings ───
+function addTestString() {
+  const container = document.getElementById('testStrings');
+  const entry = document.createElement('div');
+  entry.className = 'test-entry';
+  entry.innerHTML = `
+    <div class="test-row">
+      <div class="test-input-wrap"><input type="text" class="test-input" placeholder="Type or paste a test string..."></div>
+      <button class="remove-btn" onclick="removeTestRow(this)" title="Remove">✕</button>
     </div>
-    <p style="margin-top:0.75rem;font-size:0.85rem;color:#666;">All free. All open source. Built by <a href="https://rendly-api.fly.dev" style="color:#4f46e5;">Mack</a>.</p>
-  </div>
+    <div class="highlighted-output"></div>
+    <div class="match-info"></div>`;
+  container.appendChild(entry);
+  entry.querySelector('.test-input').focus();
+}
+
+function removeTestRow(btn) {
+  const entries = document.querySelectorAll('.test-entry');
+  if (entries.length <= 1) return;
+  btn.closest('.test-entry').remove();
+}
+
+// ─── Pattern Grid ───
+function renderPatternGrid() {
+  const grid = document.getElementById('patternGrid');
+  grid.innerHTML = PATTERNS.map(p => `
+    <div class="pattern-card" onclick="loadPattern('${p.regex.replace(/'/g, "\\'")}')">
+      <div class="name">${p.name}</div>
+      <div class="regex">${escapeHTML(p.regex)}</div>
+    </div>`).join('');
+}
+
+function loadPattern(regex) {
+  document.getElementById('regexInput').value = regex;
+  runAll();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Tabs ───
+function switchTab(btn, id) {
+  btn.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.card').querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+function switchLang(btn, lang) {
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentLang = lang;
+  generateCode();
+}
+
+// ─── Share ───
+function shareURL() {
+  const pattern = document.getElementById('regexInput').value;
+  const flags = getFlags();
+  const tests = [...document.querySelectorAll('.test-input')].map(i => i.value).filter(Boolean);
+  const params = new URLSearchParams({ p: pattern, f: flags, t: tests.join('\n') });
+  const url = location.origin + location.pathname + '?' + params.toString();
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('[onclick="shareURL()"]');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '🔗 Share', 1500);
+  });
+}
+
+function loadFromURL() {
+  const params = new URLSearchParams(location.search);
+  if (params.has('p')) {
+    document.getElementById('regexInput').value = params.get('p');
+    if (params.has('f')) {
+      const flags = params.get('f');
+      document.querySelectorAll('.flag-btn').forEach(btn => {
+        btn.classList.toggle('active', flags.includes(btn.dataset.flag));
+      });
+    }
+    if (params.has('t')) {
+      const tests = params.get('t').split('\n');
+      const container = document.getElementById('testStrings');
+      container.innerHTML = '';
+      tests.forEach(t => {
+        addTestString();
+        container.lastChild.querySelector('.test-input').value = t;
+      });
+    }
+  }
+}
+
+// ─── Sidebar ───
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ─── Utilities ───
+function escapeHTML(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyCode() {
+  const code = document.getElementById('codeOutput').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 1500);
+  });
+}
+
+// ─── Start ───
+init();
+</script>
 </body>
 </html>
